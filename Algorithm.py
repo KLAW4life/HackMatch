@@ -9,6 +9,7 @@ db_config = {
     'auth_plugin': 'mysql_native_password'
 }
 
+# Function to fetch users from the database
 def get_users():
     try:
         # Connect to the database
@@ -92,6 +93,15 @@ def generate_feed(current_user, users):
 
     return feed
 
+# Function to filter the feed by match score percentage
+def filter_feed_by_percentage(feed, percentage):
+    threshold = percentage / 100  # Convert percentage to a decimal (e.g., 50% -> 0.5)
+    
+    # Filter out users with match score lower than the threshold
+    filtered_feed = [entry for entry in feed if entry['match_score'] >= threshold]
+    
+    return filtered_feed
+
 # Main function to run the match scoring and feed generation
 def main():
     users = get_users()  # Get users from the database
@@ -99,9 +109,12 @@ def main():
         current_user = users[0]  # Assume the first user is the current user
         feed = generate_feed(current_user, users)  # Generate feed
 
+        # Apply the filter by percentage (e.g., 50%)
+        filtered_feed = filter_feed_by_percentage(feed, 50)
+
         # Print the results
         print(f"Feed generated for {current_user['firstname']} {current_user['lastname']}:")
-        for entry in feed:
+        for entry in filtered_feed:
             user = entry['user']
             print(f"Matched with {user['firstname']} {user['lastname']} (Match Score: {entry['match_score']})")
 
