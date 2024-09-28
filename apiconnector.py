@@ -1,32 +1,18 @@
 import mysql.connector
 import json
+from dotenv import load_dotenv
+import os
 
-''' 
-# Database connection configuration for Ubuntu Specific
+# Get the database credentials
+load_dotenv()
+
+# Database connection configuration using environment variables
 db_config = {
-    'host': 'localhost',        
-    'user': 'test_user',        
-    'password': 'test_password',
-    'database': 'HackerMatch' ,
-    'auth_plugin': 'mysql_native_password'  
-}
-
-
-# Database connection configuration for Mac/Windows
-db_config = {
-    'host': 'localhost',        
-    'user': 'test_user',        
-    'password': 'test_password',
-    'database': 'HackerMatch'
-}
-'''
-
-db_config = {
-    'host': 'localhost',        
-    'user': 'root',        
-    'password': 'Kl@w$li3e!',
-    'database': 'HackerMatch',
-    'auth_plugin': 'mysql_native_password'
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME'),
+    'auth_plugin': os.getenv('AUTH_PLUGIN')
 }
 
 # Function to fetch users data and team (if formed and confirmed)

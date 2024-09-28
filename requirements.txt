@@ -8,3 +8,4 @@ click==8.1.6
 colorama==0.4.6
 importlib-metadata==6.6.0
 zipp==3.15.0
+python-dotenv==1.0.0
