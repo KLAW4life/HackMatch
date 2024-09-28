@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #f3f3f3;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,16 +15,17 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: hsl(0, 0%, 100%);
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
 
 body {
   margin: 0;
-  display: flex;
+  background-image: linear-gradient(hwb(237 45% 0%), hsl(237, 97%, 57%));
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -35,20 +36,6 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +46,81 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+
+}
+a:hover {
+  color: hwb(237 45% 0%);
+  cursor: pointer;
+}
+
+body,
+html {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.card {
+  font-weight: bold;
+  display: flex;
+  text-align: center;
+  margin: auto;
+  max-width: 50%;
+  background-color: hwb(0 0% 100%);
+  border-radius: 10px;
+  color: hwb(0 100% 0%);
+}
+
+.card .card-image {
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.Header {
+  background-color: rgb(34, 34, 34);
+  display: flex;
+  position: absolute;
+  align-items: center;
+  width: 100%;
+  top: -0.5rem;
+  right: 0%;
+  height: 4rem;
+}
+
+.Header ul {
+  margin: auto;
+}
+
+.Header li {
+  display: inline-flex;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.Header .HeaderAbout {
+  right: 0%;
+}
+
+
+.TF {
+  color: white;
+  margin: auto;
+  text-align: center;
+  padding: 8em;
+}
+
+.TF .TF-desc {
+  margin: auto;
+  font-size: 4vh;
+  max-width: 400px;
+}
+
+.TF .TF-title {
+  font-size: 9vh;
 }
