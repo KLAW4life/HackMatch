@@ -10,20 +10,20 @@ db_config = {
     'auth_plugin': 'mysql_native_password'
 }
 
-# Function to fetch users with their roles, languages, and project interests
-def get_users_with_details():
+# Function to fetch users data and team (if formed and confirmed)
+def get_users_data():
     try:
-        # Connect to the database
         mydb = mysql.connector.connect(**db_config)
         mycursor = mydb.cursor(dictionary=True)
         
-        # SQL query to fetch user information along with their roles, languages, and interests
         sql = """
             SELECT 
                 u.id, u.firstname, u.lastname, u.email, u.username,
+                u.status, u.project_description, u.class_standing,
                 GROUP_CONCAT(DISTINCT r.role_name) AS roles,
                 GROUP_CONCAT(DISTINCT l.language_name) AS languages,
-                GROUP_CONCAT(DISTINCT pi.interest_name) AS interests
+                GROUP_CONCAT(DISTINCT pi.interest_name) AS interests,
+                ft.team_name
             FROM 
                 Users u
             LEFT JOIN 
@@ -38,15 +38,17 @@ def get_users_with_details():
                 UserProjectInterests upi ON u.id = upi.user_id
             LEFT JOIN 
                 ProjectInterests pi ON upi.interest_id = pi.id
+            INNER JOIN 
+                TeamMembers tm ON u.id = tm.user_id
+            INNER JOIN 
+                FullTeams ft ON tm.team_id = ft.id
             GROUP BY 
-                u.id, u.firstname, u.lastname, u.email, u.username
+                u.id, u.firstname, u.lastname, u.email, u.username, u.status, u.project_description, u.class_standing, ft.team_name
         """
         
-        # Execute the query
         mycursor.execute(sql)
         results = mycursor.fetchall()
         
-        # Close the cursor and connection
         mycursor.close()
         mydb.close()
 
@@ -55,12 +57,12 @@ def get_users_with_details():
         return json_results
     except mysql.connector.Error as e:
         # Handle database errors
-        error_message = {"error": f"Error fetching users: {e}"}
+        error_message = {"error": f"Error fetching users in full teams: {e}"}
         return json.dumps(error_message, indent=4)
 
-# Main function to print the JSON output
+
 def main():
-    users = get_users_with_details()
+    users = get_users_data()
     print(users)
 
 if __name__ == '__main__':
