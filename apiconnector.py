@@ -25,7 +25,7 @@ db_config = {
 db_config = {
     'host': 'localhost',        
     'user': 'root',        
-    'password': 'Kl@w$li3e!',
+    'password': 'Machete67!',
     'database': 'HackerMatch',
     'auth_plugin': 'mysql_native_password'
 }
