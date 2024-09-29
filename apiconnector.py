@@ -148,7 +148,7 @@ def get_thread_messages(user1_id, user2_id):
 
 def main():
      users = get_users_data()
-    # print(users)
+     print(users)
 
     # Test
     #send_message(sender_id=1, receiver_id=2, content="Hello! How are you?")
