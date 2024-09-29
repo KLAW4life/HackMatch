@@ -1,2 +1,29 @@
 # HackMatch
-These two folders contain two of the main pages of out web app: the sign up page and the login page. The sign up page allows users to enter their information in order to get matched with the perfect group and the login page allows users to return to their account and find a team.
+
+This is the starter code for HackerMatch. 
+
+Remember to always create a virtual environment first and then install the packages from the requirements file.
+
+### Running the application
+
+### Creating the virtual environment
+```bash
+$ python -m venv venv (you may need to use python3 instead)
+```
+### Creating the virtual environment
+For Mac/Linux Systems:
+```bash
+$ source venv/bin/activate 
+```
+For Windows Systems:
+```bash
+$ .\venv\Scripts\activate
+```
+### Installing the packages
+```bash
+$ pip install -r requirements.txt
+```
+### Running the application
+```bash
+$ flask --app HackerMatchApp  --debug run
+```
