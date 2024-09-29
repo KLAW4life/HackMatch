@@ -17,7 +17,7 @@ $ source venv/bin/activate
 ```
 For Windows Systems:
 ```bash
-$ source .\venv\Scripts\activate
+$ .\venv\Scripts\activate
 ```
 ### Installing the packages
 ```bash

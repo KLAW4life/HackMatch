@@ -1,4 +1,4 @@
-- DROP DATABASE HackerMatch;
+-- DROP DATABASE HackerMatch;
 
 CREATE DATABASE IF NOT EXISTS HackerMatch;
 

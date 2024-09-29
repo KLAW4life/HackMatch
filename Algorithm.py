@@ -110,7 +110,7 @@ def main():
         feed = generate_feed(current_user, users)  # Generate feed
 
         # Apply the filter by percentage (e.g., 50%)
-        filtered_feed = filter_feed_by_percentage(feed, 30)
+        filtered_feed = filter_feed_by_percentage(feed, 0)
 
         # Print the results
         print(f"Feed generated for {current_user['firstname']} {current_user['lastname']}:")
