@@ -1,15 +1,21 @@
 from flask import Flask, jsonify
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+import os
+
+# Get the database credentials
+load_dotenv()
 
 HackerMatchApp = Flask(__name__)
 
-# Database connection configuration
+# Database connection configuration using environment variables
 db_config = {
-    'host': 'localhost',        
-    'user': 'test_user',        
-    'password': 'test_password',
-    'database': 'HackerMatch'   
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME'),
+    'auth_plugin': os.getenv('AUTH_PLUGIN')
 }
 
 # API endpoint to retrieve all users
@@ -28,6 +34,7 @@ def get_users():
     except mysql.connector.Error as e:
         print("Error fetching users:", e)
         return []
+    
     
 # Test functions
 def main():

@@ -147,16 +147,16 @@ def get_thread_messages(user1_id, user2_id):
         mydb.close()
 
 def main():
-    # users = get_users_data()
+     users = get_users_data()
     # print(users)
 
     # Test
-    send_message(sender_id=1, receiver_id=2, content="Hello! How are you?")
+    #send_message(sender_id=1, receiver_id=2, content="Hello! How are you?")
 
     # Get messages from a thread
-    messages = get_thread_messages(user1_id=1, user2_id=2)
-    for message in messages:
-        print(f"{message['sender_name']}: {message['content']} at {message['timestamp']}")
+    # messages = get_thread_messages(user1_id=1, user2_id=2)
+    # for message in messages:
+    #     print(f"{message['sender_name']}: {message['content']} at {message['timestamp']}")
 
 if __name__ == '__main__':
     main()
