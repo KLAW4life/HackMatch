@@ -36,9 +36,10 @@ CREATE TABLE UserRoles (
     user_id INT,
     role_id INT,
     PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (role_id) REFERENCES Roles(id)
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES Roles(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE UserLanguages (
     user_id INT,
