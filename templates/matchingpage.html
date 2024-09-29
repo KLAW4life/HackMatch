@@ -122,10 +122,15 @@
       { url: 'https://via.placeholder.com/150/F8E71C/FFFFFF?text=Project+5', text: 'This project is all about data analysis and insights.' },
     ];
 
-    // Function to create and display projects in list items
-    const renderProjects = () => {
+    // Function to create and display matched profiles in list items
+    const renderProjects = (projects) => {
       const projectListContainer = document.getElementById('imageList');
-      projects.forEach(project => {
+      projectListContainer.innerHTML = '';  // Clear any existing items
+
+      projects.forEach(entry => {
+        const user = entry.user;  // Get the user details
+        const matchScore = entry.match_score;  // Get the match score
+
         const listItem = document.createElement('li');
         listItem.classList.add('list-group-item');
 
@@ -133,31 +138,31 @@
         const imageContainer = document.createElement('div');
         imageContainer.classList.add('image-container');
 
-        // Create the project image
+        // Create the project image (placeholder for now)
         const projectImage = document.createElement('img');
-        projectImage.src = project.url; // Assuming the original project image is here
-        projectImage.alt = 'Project Image'; // Alt text for accessibility
+        projectImage.src = 'https://via.placeholder.com/150';  // Placeholder image
+        projectImage.alt = 'User Image';  // Alt text for accessibility
 
-        // Create a text block
+        // Create a text block for user info
         const textBlock = document.createElement('p');
-        textBlock.textContent = project.text;
+        textBlock.textContent = `${user.firstname} ${user.lastname} - Match Score: ${matchScore.toFixed(2)}`;
 
         // Create Accept button
         const acceptButton = document.createElement('button');
         acceptButton.classList.add('btn', 'btn-success', 'accept-btn');
         acceptButton.textContent = 'Accept';
-        acceptButton.onclick = () => alert('Accepted: ' + project.text);
+        acceptButton.onclick = () => alert('Accepted: ' + user.firstname + ' ' + user.lastname);
 
         // Create Decline button
         const declineButton = document.createElement('button');
         declineButton.classList.add('btn', 'btn-danger', 'ms-2');
         declineButton.textContent = 'Decline';
-        declineButton.onclick = () => alert('Declined: ' + project.text);
+        declineButton.onclick = () => alert('Declined: ' + user.firstname + ' ' + user.lastname);
 
         // Create chat icon
         const chatIcon = document.createElement('span');
         chatIcon.classList.add('chat-icon');
-        chatIcon.innerHTML = '💬'; // Chat icon representation
+        chatIcon.innerHTML = '💬';  // Chat icon representation
 
         // Append the image and text to the container
         imageContainer.appendChild(projectImage);
@@ -167,11 +172,34 @@
         listItem.appendChild(imageContainer);
         listItem.appendChild(acceptButton);
         listItem.appendChild(declineButton);
-        listItem.appendChild(chatIcon); // Add the chat icon
+        listItem.appendChild(chatIcon);  // Add the chat icon
 
         projectListContainer.appendChild(listItem);
       });
     };
+
+  // Function to fetch feed from API and render projects
+  const fetchAndRenderFeed = () => {
+    const userId = 1;  // Example: current user ID (replace with real user ID)
+    const percentage = 50;  // Example: filter by 50% match
+
+    // Fetch the user feed from the API
+    fetch(`/feed/${userId}?percentage=${percentage}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Error fetching feed:', data.error);
+        } else {
+          renderProjects(data);  // Render the matched profiles
+        }
+      })
+      .catch(error => console.error('Error fetching feed:', error));
+  };
+
+  // Call the fetch function when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchAndRenderFeed();
+  });
 
     // Call the render function to display the projects
     renderProjects();

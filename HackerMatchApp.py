@@ -3,6 +3,7 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 import os
+from Algorithm import get_users, generate_feed, filter_feed_by_percentage
 
 # Get the database credentials
 load_dotenv()
@@ -262,6 +263,26 @@ def authenticate_user(username, password):
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
+
+@HackerMatchApp.route('/feed/<int:user_id>', methods=['GET'])
+def get_user_feed(user_id):
+    users = get_users()  # Fetch all users from the database
+    if not users:
+        return jsonify({"error": "No users found"}), 404
+
+    # Find the current user by ID
+    current_user = next((user for user in users if user['id'] == user_id), None)
+    if not current_user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Generate the feed based on match scores
+    feed = generate_feed(current_user, users)
+
+    # Apply filtering by percentage if specified in the query parameter (e.g., ?percentage=50)
+    percentage = request.args.get('percentage', default=50, type=int)
+    filtered_feed = filter_feed_by_percentage(feed, percentage)
+
+    return jsonify(filtered_feed), 200
 
 if __name__ == '__main__':
     HackerMatchApp.run(debug=True)
