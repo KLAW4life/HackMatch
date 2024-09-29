@@ -87,12 +87,16 @@
 </head>
 <body>
 
+
   <!-- Welcome Screen -->
-  <div id="welcomeScreen" class="welcome-screen">
+  <div id="welcomeScreen" class="welcome-screen text-center">
     <h1>HackerMatch</h1>
-    <button class="btn btn-light large-button" id="loginButton" action="{{ url_for('login') }}">Log In</button>
-    <button class="btn btn-primary large-button" id="signUpButton" action="{{ url_for('register') }}">Sign Up</button>
+    <div class="mt-4">
+      <a href="{{ url_for('login') }}" class="btn btn-light large-button mx-2">Log In</a>
+      <a href="{{ url_for('register') }}" class="btn btn-primary large-button mx-2">Sign Up</a>
+    </div>
   </div>
+
 
   <!-- Main Content Section -->
   <main class="container mt-4" id="mainContent">
