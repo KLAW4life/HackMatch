@@ -64,18 +64,15 @@
       <nav class="float-end">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link text-white" href="#home">Home</a>
+            <a class="nav-link text-white" href="{{ url_for('index') }}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="#about">About</a>
+            <a class="nav-link text-white" href="{{ url_for('about_us') }}">About</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="#contact">Contact</a>
-          </li>
-          <li class="nav-item">
+          <li class="nav-item" action="{{ url_for('login') }}">
             <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#loginModal">Log In</button>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" action="{{ url_for('register') }}">
             <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign Up</button>
           </li>
         </ul>
