@@ -15,16 +15,64 @@
             background-color: #f4f4f4;
             color: #333;
         }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 20px 0;
-            text-align: center;
+
+        /* Top Navigation Bar (from your HackerMatch chat page) */
+        .navbar {
+            background-color: #000;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
         }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+        }
+
+        .navbar .nav-buttons {
+            display: flex;
+        }
+
+        .navbar button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .navbar .login-btn {
+            background-color: #f5f5f5;
+            color: black;
+        }
+
+        .navbar .signup-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .navbar .login-btn:hover {
+            background-color: #ccc;
+        }
+
+        .navbar .signup-btn:hover {
+            background-color: #0056b3;
+        }
+
         .container {
             width: 80%;
             margin: 20px auto;
@@ -71,7 +119,7 @@
             text-decoration: underline;
         }
         footer {
-            background-color: #333;
+            background-color: #000000;
             color: #fff;
             text-align: center;
             padding: 10px 0;
@@ -85,9 +133,19 @@
 </head>
 <body>
 
-<header>
-    <h1>About Us</h1>
-</header>
+    <!-- Top Navigation Bar from the Chat Page -->
+    <div class="navbar">
+        <div class="logo">HackerMatch</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="nav-buttons">
+            <button class="login-btn">Log In</button>
+            <button class="signup-btn">Sign Up</button>
+        </div>
+    </div>
 
 <div class="container">
     <h2>Our Mission</h2>
