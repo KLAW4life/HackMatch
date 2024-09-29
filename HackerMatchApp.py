@@ -29,11 +29,15 @@ def index():
         return render_template('home.html')
     else:
         return redirect(url_for('login'))
+    # return redirect(url_for('login'))
     
 @HackerMatchApp.route('/about-us')
 def about_us():
     return render_template('aboutus.html')
-    
+
+@HackerMatchApp.route('/messages')
+def message_chat():
+    return render_template('message-chat.html') 
 
 @HackerMatchApp.route('/users', methods=['GET'])
 def get_users():
@@ -66,8 +70,6 @@ def register():
         desiredProject = request.form['desiredProject']
         project_description = request.form['project_description']
         
-
-
         if register_user(password, first_name, last_name, email, username, major, classStanding, skills, desiredProject, project_description):
             return redirect(url_for('login')) 
         else:
@@ -77,8 +79,9 @@ def register():
         majors = get_available_majors()
         lang = get_skills()
         interest = get_projects()
+        stand = get_classStanding()
 
-        return render_template('register.html', majors=majors, lang=lang, interest=interest)
+        return render_template('register.html', majors=majors, lang=lang, interest=interest, stand=stand)
 
 
     
@@ -108,8 +111,24 @@ def get_skills():
         return lang
     except mysql.connector.Error as e:
         print("Error fetching programming languages:", e)
-        return []    
+        return [] 
 
+# Represents student status in database schema   
+def get_classStanding():
+    try:
+        mydb = mysql.connector.connect(**db_config)
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT DISTINCT class_standing FROM Users;") 
+        stand = [row[0] for row in mycursor.fetchall()]
+        # print("Fetched standings:", stand)
+        mycursor.close()
+        mydb.close()
+        return stand
+    except mysql.connector.Error as e:
+        print("Error fetching class standing options:", e)
+        return []
+
+    
 # Represents programming desired projects in database schema   
 def get_projects():
     try:
@@ -124,60 +143,82 @@ def get_projects():
         print("Error fetching project interests:", e)
         return []   
     
-def register_user(password, first_name, last_name, email, username, major, classStanding, skills, desiredProject, project_description):
+
+def register_user(password, first_name, last_name, email, username, major, class_standing, skills, desired_project, project_description):
     try:
+
         mydb = mysql.connector.connect(**db_config)
         mycursor = mydb.cursor()
 
+        # Convert skills from a comma-separated string to a list if needed
+        if isinstance(skills, str):
+            skills = [skill.strip() for skill in skills.split(',')]
+
+        
         # Insert user data into Users table
         user_insert_query = """
-        INSERT INTO Users (first_name, last_name, email, username, password, major, class_standing, project_description)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO Users (firstname, lastname, email, username, password, class_standing, project_description)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
-
-        user_data = (first_name, last_name, email, username, password, major, classStanding, project_description)
+        user_data = (first_name, last_name, email, username, password, class_standing, project_description)
         mycursor.execute(user_insert_query, user_data)
 
         # Get the user ID of the newly inserted user
         user_id = mycursor.lastrowid
 
-        
-        mycursor.execute(skill_insert_query, (user_id, skill))
+        # Insert skills for the user
         if skills:
             for skill in skills:
-                skill_insert_query = """
-                INSERT INTO UserLanguages (user_id, language_id)
-                VALUES (
-                    %s, 
-                    (SELECT id FROM Languages WHERE language_name = %s)
-                )
-                """
+                # Check if the language exists in the Languages table
+                mycursor.execute("SELECT id FROM Languages WHERE language_name = %s", (skill,))
+                language = mycursor.fetchone()
 
-        # Insert desired project
+                if language:
+                    language_id = language[0]
+                    skill_insert_query = """
+                    INSERT INTO UserLanguages (user_id, language_id)
+                    VALUES (%s, %s)
+                    """
+                    mycursor.execute(skill_insert_query, (user_id, language_id))
+                else:
+                    print(f"Warning: Language '{skill}' not found in the Languages table.")
+
+        # Check if the desired project exists in ProjectInterests
+        mycursor.execute("SELECT id FROM ProjectInterests WHERE interest_name = %s", (desired_project,))
+        interest = mycursor.fetchone()
+
+        # If the project interest doesn't exist, insert it
+        if not interest:
+            mycursor.execute("INSERT INTO ProjectInterests (interest_name) VALUES (%s)", (desired_project,))
+            interest_id = mycursor.lastrowid
+        else:
+            interest_id = interest[0]
+
+        # Insert the user and interest into UserProjectInterests
         project_insert_query = """
-        INSERT INTO UserProjectInterests (user_id, project_id)
-        VALUES (
-            %s,
-            (SELECT id FROM Projects WHERE project_name = %s)
-        )
+        INSERT INTO UserProjectInterests (user_id, interest_id)
+        VALUES (%s, %s)
         """
-        mycursor.execute(project_insert_query, (user_id, desiredProject))
+        mycursor.execute(project_insert_query, (user_id, interest_id))
 
-        # Insert user role based on major
-        role_insert_query = """
-        INSERT INTO UserRoles (user_id, role_id)
-        VALUES (
-            %s,
-            (SELECT id FROM Roles WHERE role_name = %s)
-        )
-        """
-        mycursor.execute(role_insert_query, (user_id, major))
 
+        # Insert user role based on major (only if a major is provided)
+        if major:
+            role_insert_query = """
+            INSERT INTO UserRoles (user_id, role_id)
+            VALUES (
+                %s,
+                (SELECT id FROM Roles WHERE role_name = %s)
+            )
+            """
+            mycursor.execute(role_insert_query, (user_id, major))
+
+        # Commit the transaction
         mydb.commit()
 
         return True
 
-    except Error as e:
+    except mysql.connector.Error as e:
         print("Error inserting data:", e)
         return False
 
@@ -186,6 +227,7 @@ def register_user(password, first_name, last_name, email, username, major, class
             mycursor.close()
         if mydb:
             mydb.close()
+
 
 
 @HackerMatchApp.route('/login', methods=['GET', 'POST'])
@@ -215,6 +257,11 @@ def authenticate_user(username, password):
     except mysql.connector.Error as e:
         print("Error authenticating user:", e)
         return False
+    
+@HackerMatchApp.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     HackerMatchApp.run(debug=True)

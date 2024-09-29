@@ -52,16 +52,13 @@
 
                     <div class="form-group">
                         <label for="classStanding">Class Standing:</label>
-                        <select class="form-control" id="classStanding" name="classStanding" required>
-                            <option value="">Select...</option>
-                            <option value="Freshman">Freshman</option>
-                            <option value="Sophomore">Sophomore</option>
-                            <option value="Junior">Junior</option>
-                            <option value="Senior">Senior</option>
-                            <option value="Grad Student">Grad Student</option>
-                            <option value="Masters">Masters</option>
-                            <option value="phd">Phd</option>
-                        </select>
+                        <div class="form-group">
+                            <select class="form-control" id="classStanding" name="classStanding" required>
+                                {% for stand in stand %}
+                                    <option value="{{ stand }}">{{ stand }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
