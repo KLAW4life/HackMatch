@@ -3,6 +3,7 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 import os
+from apiconnector import send_message
 
 # Get the database credentials
 load_dotenv()
@@ -215,6 +216,38 @@ def authenticate_user(username, password):
     except mysql.connector.Error as e:
         print("Error authenticating user:", e)
         return False
+    
+@HackerMatchApp.route('/get_messages/<int:user1_id>/<int:user2_id>', methods=['GET'])
+def get_messages(user1_id, user2_id):
+    try:
+        # Use the function from apiconnector to get messages
+        from apiconnector import get_thread_messages
+        messages = get_thread_messages(user1_id, user2_id)
+
+        if not messages:
+            return jsonify({"error": "No messages found"}), 404
+
+        return jsonify(messages)
+    except Exception as e:
+        print("Error fetching messages:", e)
+        return jsonify({"error": str(e)}), 500
+    
+@HackerMatchApp.route('/send_message', methods=['POST'])
+def send_message_route():
+    data = request.json
+    sender_id = data.get('sender_id')
+    receiver_id = data.get('receiver_id')
+    content = data.get('content')
+
+    if not sender_id or not receiver_id or not content:
+        return jsonify({"error": "Missing data"}), 400
+
+    try:
+        send_message(sender_id, receiver_id, content)
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print("Error sending message:", e)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     HackerMatchApp.run(debug=True)
