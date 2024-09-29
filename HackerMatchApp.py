@@ -30,6 +30,10 @@ def index():
     else:
         return redirect(url_for('login'))
     
+@HackerMatchApp.route('/about-us')
+def about_us():
+    return render_template('aboutus.html')
+    
 
 @HackerMatchApp.route('/users', methods=['GET'])
 def get_users():
@@ -193,7 +197,7 @@ def login():
             session['username'] = username
             return redirect(url_for('index'))
         else:
-            return render_template('login.html', error='Invalid user ID or password')
+            return render_template('login.html', error='Invalid username or password')
     else:
         return render_template('login.html')
     
