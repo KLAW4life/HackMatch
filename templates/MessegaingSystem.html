@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Chat between <span id="chat-user1"></span> and <span id="chat-user2"></span></h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Messages display area -->
+                        <div id="messages" class="overflow-auto" style="height: 300px; border: 1px solid #ccc; padding: 10px;">
+                            <!-- Messages will be dynamically added here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Message input form -->
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Type your message...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" id="sendMessageBtn" type="button">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS to handle the messaging system -->
+    <script>
+        let senderId = 1;  // Example sender (Replace with dynamic data)
+        let receiverId = 2; // Example receiver (Replace with dynamic data)
+
+        // Display the user names in the chat header
+        document.getElementById('chat-user1').innerText = "User " + senderId;
+        document.getElementById('chat-user2').innerText = "User " + receiverId;
+
+        // Function to fetch and display messages in the chat
+        function fetchMessages() {
+            $.ajax({
+                url: `/messages/${senderId}/${receiverId}`,  // Flask API endpoint
+                method: 'GET',
+                success: function(messages) {
+                    const messagesContainer = $('#messages');
+                    messagesContainer.empty();  // Clear existing messages
+                    if (messages.length > 0) {
+                        messages.forEach(msg => {
+                            const messageElement = `
+                                <div class="message mb-2">
+                                    <strong>${msg.sender_name}</strong>: ${msg.content} 
+                                    <small class="text-muted float-right">${msg.timestamp}</small>
+                                </div>`;
+                            messagesContainer.append(messageElement);
+                        });
+                    } else {
+                        messagesContainer.append('<p>No messages found.</p>');
+                    }
+                },
+                error: function() {
+                    alert("Failed to retrieve messages.");
+                }
+            });
+        }
+
+        // Function to send a message
+        function sendMessage() {
+            const messageContent = $('#messageInput').val();
+            if (messageContent.trim() === '') {
+                alert('Message cannot be empty!');
+                return;
+            }
+
+            $.ajax({
+                url: '/message/send',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    sender_id: senderId,
+                    receiver_id: receiverId,
+                    content: messageContent
+                }),
+                success: function() {
+                    $('#messageInput').val('');  // Clear input field
+                    fetchMessages();  // Reload messages
+                },
+                error: function() {
+                    alert('Failed to send message.');
+                }
+            });
+        }
+
+        // Fetch messages when the page loads
+        $(document).ready(function() {
+            fetchMessages();
+
+            // Set up event listener for send button
+            $('#sendMessageBtn').click(function() {
+                sendMessage();
+            });
+
+            // Allow pressing "Enter" to send a message
+            $('#messageInput').keypress(function(e) {
+                if (e.which === 13) {  // Enter key
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
