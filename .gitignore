@@ -19,3 +19,7 @@ venv/
 # Environment Variables
 .env
 .flaskenv
+
+#node_modues
+node_modules/
+
