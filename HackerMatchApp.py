@@ -38,7 +38,7 @@ def about_us():
 
 @HackerMatchApp.route('/messages')
 def message_chat():
-    return render_template('message-chat.html') 
+    return render_template('chatpage.html') 
 
 @HackerMatchApp.route('/users', methods=['GET'])
 def get_users():

@@ -187,13 +187,13 @@
     <div class="navbar">
         <div class="logo">HackerMatch</div>
         <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('about_us') }}">About</a>
+            <a href="{{ url_for('display_teams') }}">Matched Teams</a>
+            <a href="{{ url_for('message_chat') }}">My Messages</a>
         </div>
-        <div class="nav-buttons">
-            <button class="login-btn">Log In</button>
-            <button class="signup-btn">Sign Up</button>
+        <div class="nav-buttons" action="{{ url_for('logout') }}" method="POST">
+            <button class="login-btn">Log out</button>
         </div>
     </div>
 
