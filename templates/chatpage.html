@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Chat Page | HackerMatch</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -184,7 +185,7 @@
 
     <!-- Top Navigation Bar -->
     <div class="navbar">
-        <div class="logo">HackerkMatch</div>
+        <div class="logo">HackerMatch</div>
         <div class="nav-links">
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -200,19 +201,27 @@
         <!-- Matches Section (1/3 of screen) -->
         <div class="matches-section">
             <h2>Your Matches</h2>
-            <!-- Empty for now -->
+            <!-- We will leave this empty for now -->
         </div>
 
         <!-- Chat Section (2/3 of screen) -->
         <div class="chat-container">
             <!-- Chat Header -->
             <div class="chat-header">
-                Chat with [User Name]
+                Chat with Alice Smith
             </div>
 
             <!-- Chat Messages -->
             <div class="chat-messages" id="chat-messages">
-                <!-- Messages will be dynamically added here -->
+                <div class="message sent">
+                    <div class="content">Hey! How’s it going?</div>
+                </div>
+                <div class="message received">
+                    <div class="content">I’m good, you?</div>
+                </div>
+                <div class="message sent">
+                    <div class="content">Doing great! Ready for the hackathon?</div>
+                </div>
             </div>
 
             <!-- Chat Input -->
@@ -224,67 +233,30 @@
     </div>
 
     <script>
-        // Replace with dynamic user IDs
-        const user1_id = 1;  // Example: current user (replace with real user ID)
-        const user2_id = 2;  // Example: chatting with (replace with real user ID)
-
-        // Function to fetch messages
-        function fetchMessages() {
-            const url = `/get_messages/${user1_id}/${user2_id}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const chatMessages = document.getElementById('chat-messages');
-                    chatMessages.innerHTML = '';  // Clear previous messages
-                    data.forEach(message => {
-                        const messageDiv = document.createElement('div');
-                        messageDiv.classList.add('message', message.sender_name === "YourName" ? 'sent' : 'received');
-                        messageDiv.innerHTML = `<strong>${message.sender_name}:</strong> ${message.content} <em>${message.timestamp}</em>`;
-                        chatMessages.appendChild(messageDiv);
-                    });
-                    chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
-                })
-                .catch(error => console.error('Error fetching messages:', error));
-        }
-
-        // Function to send a message
         function sendMessage() {
             const inputField = document.getElementById('chat-input');
             const messageText = inputField.value;
 
             if (messageText.trim() !== "") {
-                const url = '/send_message';  // Flask route to send messages
-                const payload = {
-                    sender_id: user1_id,  // Replace with logged-in user ID
-                    receiver_id: user2_id,  // Replace with chat partner's user ID
-                    content: messageText
-                };
+                const chatMessages = document.getElementById('chat-messages');
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('message', 'sent');
 
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        inputField.value = '';  // Clear input field
-                        fetchMessages();  // Fetch updated message list
-                    } else {
-                        console.error('Error sending message:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+                const content = document.createElement('div');
+                content.classList.add('content');
+                content.textContent = messageText;
+
+                newMessage.appendChild(content);
+                chatMessages.appendChild(newMessage);
+
+                // Clear the input field
+                inputField.value = '';
+
+                // Scroll to bottom of chat
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         }
-
-        // Fetch messages when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchMessages();
-        });
     </script>
-
+    
 </body>
 </html>
