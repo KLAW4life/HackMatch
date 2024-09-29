@@ -27,10 +27,9 @@ db_config = {
 @HackerMatchApp.route('/')
 def index():
     if 'username' in session:
-        # match = get_user_matches(session['user_id'])
-        return render_template('matchingpage.html')
-    else:
         return render_template('home.html')
+    else:
+        return redirect(url_for('login'))
     # return redirect(url_for('login'))
     
 @HackerMatchApp.route('/about-us')
@@ -239,30 +238,12 @@ def login():
         password = request.form['password']
         if authenticate_user(username, password):
             session['username'] = username
-            # session['user_id'] = get_id(username)
             return redirect(url_for('index'))
         else:
             return render_template('login.html', error='Invalid username or password')
     else:
         return render_template('login.html')
-
-# def get_id(username):
-#     try:
-#         mydb = mysql.connector.connect(**db_config)
-#         mycursor = mydb.cursor()
-#         sql = "SELECT id FROM Users WHERE username = %s;"
-#         values = (username)
-#         mycursor.execute(sql, values)
-#         user = mycursor.fetchone()
-#         mycursor.close()
-#         mydb.close()
-#         return user is not None
-#     except mysql.connector.Error as e:
-#         print("Error getting user id:", e)
-#         return False
-
-
-
+    
 def authenticate_user(username, password):
     try:
         mydb = mysql.connector.connect(**db_config)
@@ -280,47 +261,8 @@ def authenticate_user(username, password):
     
 @HackerMatchApp.route('/logout', methods=['POST'])
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
-
-# Represents student status in database schema   
-def get_user_matches(user_id):
-    try:
-        # Connect to the database
-        mydb = mysql.connector.connect(**db_config)
-        mycursor = mydb.cursor(dictionary=True)
-
-        # SQL query to get match requests where the current user is user1 or user2
-        query = """
-        SELECT m.id, 
-               u1.firstname AS user1_firstname, 
-               u1.lastname AS user1_lastname,
-               u2.firstname AS user2_firstname, 
-               u2.lastname AS user2_lastname,
-               m.status
-        FROM MatchRequests m
-        JOIN Users u1 ON m.user1_id = u1.id
-        JOIN Users u2 ON m.user2_id = u2.id
-        WHERE m.user1_id = %s OR m.user2_id = %s;
-        """
-
-        # Execute the query, passing in the current user_id for both placeholders
-        mycursor.execute(query, (user_id, user_id))
-
-        # Fetch all the results
-        matches = mycursor.fetchall()
-
-        # Close the cursor and the connection
-        mycursor.close()
-        mydb.close()
-
-        # Return the list of matches
-        return matches
-
-    except mysql.connector.Error as e:
-        print("Error fetching user matches:", e)
-        return []
-
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
 
 @HackerMatchApp.route('/feed/<int:user_id>', methods=['GET'])
 def get_user_feed(user_id):
