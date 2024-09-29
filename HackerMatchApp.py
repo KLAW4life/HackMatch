@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, session, redirect, url_for, json
+from flask import Flask, jsonify, request, render_template, session, redirect, url_for, json, flash
 import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
@@ -27,9 +27,9 @@ db_config = {
 @HackerMatchApp.route('/')
 def index():
     if 'username' in session:
-        return render_template('home.html')
+        return render_template('matchingpage.html')
     else:
-        return redirect(url_for('login'))
+        return render_template('home.html')
     # return redirect(url_for('login'))
     
 @HackerMatchApp.route('/about-us')
@@ -295,6 +295,7 @@ def display_teams():
 
     # Pass the data to the template without converting to JSON
     return render_template('teams.html', users_data=users_data)
+
 def get_users_data():
     try:
         mydb = mysql.connector.connect(**db_config)
@@ -343,7 +344,6 @@ def get_users_data():
         # Handle database errors
         return {"error": f"Error fetching users in full teams: {e}"}
 
-    
 
 if __name__ == '__main__':
     HackerMatchApp.run(debug=True)
