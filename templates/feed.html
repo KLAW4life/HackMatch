@@ -1,0 +1,167 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Feed</title>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Welcome, {{ current_user['firstname'] }} {{ current_user['lastname'] }}</h2>
+        <h3 class="mt-4">Your Matches:</h3>
+        {% if feed %}
+            {% for entry in feed %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ entry.user.firstname }} {{ entry.user.lastname }}</h5>
+                        <p class="card-text">
+                            <strong>Email:</strong> {{ entry.user.email }}<br>
+                            <strong>Username:</strong> {{ entry.user.username }}<br>
+                            <strong>Roles:</strong> {{ entry.user.roles | join(', ') }}<br>
+                            <strong>Languages:</strong> {{ entry.user.languages | join(', ') }}<br>
+                            <strong>Project Interests:</strong> {{ entry.user.project_interests | join(', ') }}<br>
+                            <strong>Match Score:</strong> {{ (entry.match_score * 100)|round }}%
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No matches found.</p>
+        {% endif %}
+    </div>
+   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HackMatch</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #bb6219, #3c2e8d);
+      color: white;
+    }
+    main {
+      flex: 1;
+      z-index: 1;
+    }
+    header {
+      min-height: 100px;
+    }
+    .list-group-item {
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      font-size: 14px;
+    }
+    .image-container {
+      display: flex;
+      align-items: center;
+    }
+    .image-container img {
+      max-width: 150px;
+      height: auto;
+      margin-right: 10px;
+    }
+    .btn {
+      height: 100%;
+    }
+    .accept-btn {
+      margin-left: auto;
+    }
+    .chat-icon {
+      font-size: 20px;
+      margin-left: 10px;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header and Navigation -->
+  <header class="bg-dark text-white p-4">
+    <div class="container">
+      <h1 class="float-start">HackMatch</h1>
+      <nav class="float-end">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('message_chat') }}">My Messages</a>
+          </li>
+          <li class="nav-item"></li>
+            <a class="nav-link text-white" href="{{ url_for('home') }}">My Matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('about_us') }}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('display_teams') }}">Matched Teams</a>
+          </li>
+          <form class="form-inline my-2 my-lg-0 ml-2" action="{{ url_for('logout') }}" method="POST">
+            <button class="btn btn-light" type="submit">Logout</button>
+          </form>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Section -->
+  <main class="container mt-4">
+    <h3>My Match Percentages</h3>
+
+    <ul class="list-group" id="imageList">
+      <!-- Loop through the feed data passed from Flask -->
+      {% for entry in feed %}
+      <li class="list-group-item">
+        <div class="image-container">
+          <!-- Placeholder image, you can replace with actual user profile pictures if available -->
+          <img src="https://via.placeholder.com/150" alt="User Image">
+          <p>
+            <strong>Email:</strong> {{ entry.user.email }}<br>
+            <strong>Username:</strong> {{ entry.user.username }}<br>
+            <strong>Roles:</strong> {{ entry.user.roles | join(', ') }}<br>
+            <strong>Languages:</strong> {{ entry.user.languages | join(', ') }}<br>
+            <strong>Project Interests:</strong> {{ entry.user.project_interests | join(', ') }}<br>
+            <strong>Match Score:</strong> {{ (entry.match_score * 100) | round }}%
+          </p>
+        </div>
+
+        <!-- Accept Button -->
+        <button class="btn btn-success accept-btn" onclick="alert('Accepted: {{ entry.user.firstname }} {{ entry.user.lastname }}')">Accept</button>
+
+        <!-- Decline Button -->
+        <button class="btn btn-danger ms-2" onclick="alert('Declined: {{ entry.user.firstname }} {{ entry.user.lastname }}')">Decline</button>
+
+        <!-- Chat Icon -->
+        <span class="chat-icon">💬</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white p- mt-auto">
+    <div class="container text-center">
+      <p>&copy; 2024 HackMatch</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

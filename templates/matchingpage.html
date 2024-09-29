@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Set the body to use flexbox and fill the viewport */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Full viewport height */
+      background: linear-gradient(135deg, #bb6219, #3c2e8d); /* Gradient background */
+      color: white; /* Text color for better contrast */
+    }
+
+    /* Ensure the main content area takes up available space */
+    main {
+      flex: 1; /* Allow main to grow */
+      z-index: 1; /* Keep the main content above the gradient */
+    }
+
+    /* Custom style to set the height of the header */
+    header {
+      min-height: 100px; /* Adjust this value as needed */
+    }
+
+    /* Optional: Style for the list items with a solid background color */
+    .list-group-item {
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for list items */
+      border: none; /* Remove border */
+      display: flex; /* Use flexbox to arrange items */
+      align-items: center; /* Center align items vertically */
+      justify-content: space-between; /* Space items evenly */
+      color: white; /* Make text color white */
+      font-size: 14px; /* Make text smaller */
+    }
+
+    /* Style for the image and text block */
+    .image-container {
+      display: flex; /* Use flexbox for inline layout */
+      align-items: center; /* Center-align text vertically */
+    }
+
+    .image-container img {
+      max-width: 150px; /* Set a fixed width for images */
+      height: auto; /* Maintain aspect ratio */
+      margin-right: 10px; /* Space between image and text */
+    }
+
+    /* Match the buttons' height to the container */
+    .btn {
+      height: 100%; /* Make buttons stretch to full height */
+    }
+
+    /* Align Accept button to the right */
+    .accept-btn {
+      margin-left: auto; /* Push it to the right */
+    }
+
+    /* Style for the chat icon */
+    .chat-icon {
+      font-size: 20px; /* Adjust the size of the chat icon */
+      margin-left: 10px; /* Add some space between buttons */
+      color: #007bff; /* Chat icon color */
+    }
+  </style>
+</head>
+<body>
+
+  <header class="bg-dark text-white p-4">
+    <div class="container">
+      <h1 class="float-start">HackMatch</h1>
+      <nav class="float-end">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item"></li>
+            <a class="nav-link text-white" href="{{ url_for('message_chat') }}">My Messages</a>
+          </li>
+          <li class="nav-item"></li>
+            <a class="nav-link text-white" href="{{ url_for('home') }}">My Matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('about_us') }}">About</a>
+          </li>
+          <li class="nav-item"></li>
+            <a class="nav-link text-white" href="{{ url_for('display_teams') }}">Matched Teams</a>
+          </li>
+          <form class="form-inline my-2 my-lg-0 ml-2" action="{{ url_for('logout') }}" method="POST">
+            <button class="btn btn-light" type="submit">Logout</button>
+          </form>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mt-4">
+    <ul class="list-group" id="imageList"></ul>
+
+  </main>
+  
+  
+
+  <footer class="bg-dark text-white p- mt-auto">
+    <div class="container text-center">
+      <p>&copy; 2024 My Website</p>
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- <script>
+    // Array of project image URLs and text descriptions
+    const projects = [
+      { url: 'https://via.placeholder.com/150/4A90E2/FFFFFF?text=Project+1', text: 'This is the first project. It showcases some amazing features.' },
+      { url: 'https://via.placeholder.com/150/9013FE/FFFFFF?text=Project+2', text: 'The second project highlights the use of modern technologies.' },
+      { url: 'https://via.placeholder.com/150/50E3C2/FFFFFF?text=Project+3', text: 'This project focuses on user experience and design.' },
+      { url: 'https://via.placeholder.com/150/7ED321/FFFFFF?text=Project+4', text: 'An innovative project that solves real-world problems.' },
+      { url: 'https://via.placeholder.com/150/F8E71C/FFFFFF?text=Project+5', text: 'This project is all about data analysis and insights.' },
+    ];
+
+    // Function to create and display matched profiles in list items
+    const renderProjects = (projects) => {
+      const projectListContainer = document.getElementById('imageList');
+      projectListContainer.innerHTML = '';  // Clear any existing items
+
+      projects.forEach(entry => {
+        const user = entry.user;  // Get the user details
+        const matchScore = entry.match_score;  // Get the match score
+
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+
+        // Create a container for the image and text
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-container');
+
+        // Create the project image (placeholder for now)
+        const projectImage = document.createElement('img');
+        projectImage.src = 'https://via.placeholder.com/150';  // Placeholder image
+        projectImage.alt = 'User Image';  // Alt text for accessibility
+
+        // Create a text block for user info
+        const textBlock = document.createElement('p');
+        textBlock.textContent = `${user.firstname} ${user.lastname} - Match Score: ${matchScore.toFixed(2)}`;
+
+        // Create Accept button
+        const acceptButton = document.createElement('button');
+        acceptButton.classList.add('btn', 'btn-success', 'accept-btn');
+        acceptButton.textContent = 'Accept';
+        acceptButton.onclick = () => alert('Accepted: ' + user.firstname + ' ' + user.lastname);
+
+        // Create Decline button
+        const declineButton = document.createElement('button');
+        declineButton.classList.add('btn', 'btn-danger', 'ms-2');
+        declineButton.textContent = 'Decline';
+        declineButton.onclick = () => alert('Declined: ' + user.firstname + ' ' + user.lastname);
+
+        // Create chat icon
+        const chatIcon = document.createElement('span');
+        chatIcon.classList.add('chat-icon');
+        chatIcon.innerHTML = '💬';  // Chat icon representation
+
+        // Append the image and text to the container
+        imageContainer.appendChild(projectImage);
+        imageContainer.appendChild(textBlock);
+
+        // Append the container, buttons, and chat icon to the list item
+        listItem.appendChild(imageContainer);
+        listItem.appendChild(acceptButton);
+        listItem.appendChild(declineButton);
+        listItem.appendChild(chatIcon);  // Add the chat icon
+
+        projectListContainer.appendChild(listItem);
+      });
+    };
+
+  // Function to fetch feed from API and render projects
+  const fetchAndRenderFeed = () => {
+    const userId = 1;  // Example: current user ID (replace with real user ID)
+    const percentage = 50;  // Example: filter by 50% match
+
+    // Fetch the user feed from the API
+    fetch(`/feed/${userId}?percentage=${percentage}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Error fetching feed:', data.error);
+        } else {
+          renderProjects(data);  // Render the matched profiles
+        }
+      })
+      .catch(error => console.error('Error fetching feed:', error));
+  };
+
+  // Call the fetch function when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchAndRenderFeed();
+  });
+
+    // Call the render function to display the projects
+    renderProjects();
+  </script> -->
+</body>
+</html>
